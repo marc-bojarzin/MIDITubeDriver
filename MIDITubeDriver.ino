@@ -10,8 +10,8 @@
 
 #define PB_EDIT_PIN 11
 #define PB_STORE_PIN 10
-#define PB_SELECT_PIN 9
-#define PB_BYPASS_PIN 8
+#define PB_BYPASS_PIN 9
+#define PB_SELECT_PIN 8
 
 //----------------------------------------------------------
 // Pins for potentiometers
@@ -23,16 +23,18 @@
 //----------------------------------------------------------
 // Pins for LEDs
 
-#define LED_GREEN_PIN 7
-#define LED_RED_PIN 6
+#define LED_BYPASS_PIN 7
+#define LED_PATCH1_PIN 6
+#define LED_PATCH2_PIN ?
+#define LED_PATCH3_PIN ?
 
 //----------------------------------------------------------
 // Button objects
 
 Button pb_edit(PB_EDIT_PIN);
 Button pb_store(PB_STORE_PIN);
-//Button pb_select(PB_SELECT_PIN);
-//Button pb_bypass(PB_BYPASS_PIN);
+Button pb_bypass(PB_BYPASS_PIN);
+Button pb_select(PB_SELECT_PIN);
 
 //const int BUTTON_COUNT = 3;
 //Button* buttons [] { &pb_edit, &pb_store };
@@ -50,8 +52,16 @@ Potentiometer pot_level(POT_LEVEL_PIN);
 //----------------------------------------------------------
 // Led objects
 
-Led led_green(LED_GREEN_PIN);
-Led led_red(LED_RED_PIN);
+Led led_bypass(LED_BYPASS_PIN);
+Led led_patch1(LED_PATCH1_PIN);
+Led led_patch2(LED_PATCH2_PIN);
+Led led_patch3(LED_PATCH3_PIN);
+
+//----------------------------------------------------------
+// Patches
+
+Patch* patches[] { &patch1, &patch2, &patch3 };
+byte current_patch = 0;
 
 //==========================================================
 
@@ -59,7 +69,7 @@ void setup()
 {
     Serial.begin(19200);
     Serial.println("MIDITubeDriver");
-    led_green.off();
+    led_bypass.off();
     led_red.off();
 }
 
@@ -76,17 +86,17 @@ enum FSM
 
 void loop()
 {
-    led_green.update();
+    led_bypass.update();
     led_red.update();
 
     switch(prog_state) 
     {
     case state_ready:
-        led_green.off();
+        led_bypass.off();
         if (pb_edit.read() == 1)
         {
             prog_state = state_edit;
-            led_green.blink_slow();
+            led_bypass.blink_slow();
         }
         break;
         
@@ -95,7 +105,7 @@ void loop()
         if (pb_edit.read() == 1)
         {
             prog_state = state_ready;
-            led_green.off();
+            led_bypass.off();
         }
         if (pot_drive.update())
         {

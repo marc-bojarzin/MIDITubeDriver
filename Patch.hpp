@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 
+// 32 Bits per Patch
 struct Patch
 {
     byte drive;
@@ -13,7 +14,7 @@ struct Patch
     Patch()
         : drive(0)
         , tone(0)
-        , level(0) 
+        , level(0)
         , flags(0)
     {
     }
